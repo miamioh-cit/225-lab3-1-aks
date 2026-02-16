@@ -1,15 +1,12 @@
-
 pipeline {
-    agent any 
-
+    agent any
     environment {
-        DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'                                 // <------DON'T change this
-        DOCKER_IMAGE = 'cithit/roseaw'                                                 // <------change this
+        DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'                              // <------DON'T change this
+        DOCKER_IMAGE = 'cithit/roseaw'                                          // <------change this to your MiamiID
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-        GITHUB_URL = 'https://github.com/miamioh-cit/225-lab3-1.git'                   // <------change this
-        KUBECONFIG = credentials('roseaw-225')                                             // <------change this
+        GITHUB_URL = 'https://github.com/miamioh-cit/225-lab3-aks.git'         // <------change this to your forked repo URL
+        KUBECONFIG = credentials('roseaw-aks')                                  // <------change this to your Jenkins credential ID
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -17,7 +14,6 @@ pipeline {
                           userRemoteConfigs: [[url: "${GITHUB_URL}"]]])
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -25,7 +21,6 @@ pipeline {
                 }
             }
         }
-
         stage('Push Docker Image') {
             steps {
                 script {
@@ -35,19 +30,15 @@ pipeline {
                 }
             }
         }
-
-        stage('Deploy to Dev Environment using NodePort') {
+        stage('Deploy to AKS using LoadBalancer') {
             steps {
                 script {
-                    // Set up Kubernetes configuration using the specified KUBECONFIG
                     def kubeConfig = readFile(KUBECONFIG)
-                    // Update deployment-dev.yaml to use the new image tag
-                    sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-dev.yaml"
-                    sh "kubectl apply -f deployment-dev.yaml"
+                    sh "sed -i 's|${DOCKER_IMAGE}:latest|${DOCKER_IMAGE}:${IMAGE_TAG}|' deployment-aks.yaml"
+                    sh "kubectl apply -f deployment-aks.yaml"
                 }
             }
         }
- 
         stage('Check Kubernetes Cluster') {
             steps {
                 script {
