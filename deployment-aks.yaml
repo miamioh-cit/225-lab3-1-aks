@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: cithit/roseaw:latest     #<-------------------change this to match your MiamiID
+        image: cithit/roseaw:latest
         ports:
         - containerPort: 80
 ---
