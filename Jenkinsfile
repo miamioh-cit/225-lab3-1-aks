@@ -4,7 +4,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID = 'roseaw-dockerhub'                              // <------DON'T change this
         DOCKER_IMAGE = 'cithit/roseaw'                                          // <------change this to your MiamiID
         IMAGE_TAG = "build-${BUILD_NUMBER}"
-        GITHUB_URL = 'https://github.com/miamioh-cit/225-lab3-aks.git'         // <------change this to your forked repo URL
+        GITHUB_URL = 'https://github.com/miamioh-cit/225-lab3-1-aks.git'         // <------change this to your forked repo URL
         KUBECONFIG = credentials('roseaw-aks')                                  // <------change this to your Jenkins credential ID
     }
     stages {
